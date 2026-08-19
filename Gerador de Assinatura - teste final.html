@@ -1,0 +1,2890 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Gerador de Assinatura</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            font-family:
+                Arial,
+                "Segoe UI",
+                Helvetica,
+                sans-serif;
+
+            background-color: #f4f6f9;
+
+            padding: 30px;
+
+            display: flex;
+
+            gap: 30px;
+
+            justify-content: center;
+
+            align-items: flex-start;
+
+        }
+
+
+        .container {
+
+            background: #ffffff;
+
+            padding: 25px;
+
+            border-radius: 8px;
+
+            box-shadow:
+                0 4px 10px rgba(0,0,0,0.10);
+
+            width: 420px;
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+        }
+
+
+        h2 {
+
+            margin-top: 0;
+
+            color: #333;
+
+            font-size: 20px;
+
+        }
+
+
+        .campo {
+
+            margin-bottom: 12px;
+
+        }
+
+
+        label {
+
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 4px;
+
+            color: #555;
+
+            font-size: 13px;
+
+        }
+
+
+        input,
+        select,
+        textarea {
+
+            width: 100%;
+
+            padding: 8px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 4px;
+
+            font-size: 14px;
+
+            font-family:
+                Arial,
+                "Segoe UI",
+                Helvetica,
+                sans-serif;
+
+        }
+
+
+        textarea {
+
+            resize: vertical;
+
+            min-height: 55px;
+
+        }
+
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+
+            outline: none;
+
+            border-color: #003366;
+
+            box-shadow:
+                0 0 3px rgba(0,51,102,0.25);
+
+        }
+
+
+        .preview-box {
+
+            background: #ffffff;
+
+            padding: 25px;
+
+            border-radius: 8px;
+
+            box-shadow:
+                0 4px 10px rgba(0,0,0,0.10);
+
+            width: 700px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            height: fit-content;
+
+        }
+
+
+        .resultado {
+
+            border: 1px dashed #bbb;
+
+            padding: 20px;
+
+            background: #fff;
+
+            min-height: 150px;
+
+            overflow-x: auto;
+
+        }
+
+
+        .btn-copiar {
+
+            margin-top: 20px;
+
+            background-color: #28a745;
+
+            color: white;
+
+            border: none;
+
+            padding: 12px;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            font-size: 15px;
+
+            width: 100%;
+
+        }
+
+
+        .btn-copiar:hover {
+
+            background-color: #218838;
+
+        }
+
+
+        .ajuda {
+
+            font-size: 11px;
+
+            color: #777;
+
+            margin-top: 4px;
+
+            line-height: 1.4;
+
+        }
+
+
+        .separador {
+
+            border: 0;
+
+            border-top: 1px solid #ddd;
+
+            margin: 20px 0;
+
+        }
+
+
+        .info-logo {
+
+            font-size: 11px;
+
+            color: #777;
+
+            margin-top: 4px;
+
+            line-height: 1.5;
+
+        }
+
+
+        /* =====================================================
+           SELEÇÃO DE LOGOS
+        ===================================================== */
+
+        .logos-selecao {
+
+            border: 1px solid #ddd;
+
+            border-radius: 6px;
+
+            padding: 12px;
+
+            background: #fafafa;
+
+        }
+
+
+        .logo-check {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-bottom: 8px;
+
+            font-size: 13px;
+
+            color: #444;
+
+            cursor: pointer;
+
+        }
+
+
+        .logo-check:last-child {
+
+            margin-bottom: 0;
+
+        }
+
+
+        .logo-check input {
+
+            width: auto;
+
+            margin: 0;
+
+            cursor: pointer;
+
+        }
+
+
+        .logo-check strong {
+
+            color: #003366;
+
+        }
+
+
+        .contador-logos {
+
+            margin-top: 8px;
+
+            font-size: 11px;
+
+            color: #777;
+
+        }
+
+
+        .aviso-logos {
+
+            margin-top: 8px;
+
+            padding: 7px;
+
+            background: #fff3cd;
+
+            border: 1px solid #ffe69c;
+
+            border-radius: 4px;
+
+            color: #856404;
+
+            font-size: 11px;
+
+            display: none;
+
+        }
+
+
+        @media (max-width: 1100px) {
+
+            body {
+
+                flex-direction: column;
+
+                align-items: center;
+
+            }
+
+
+            .container,
+            .preview-box {
+
+                width: 100%;
+
+                max-width: 700px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     FORMULÁRIO
+========================================================= -->
+
+<div class="container">
+
+
+    <h2>
+        Dados da Assinatura
+    </h2>
+
+
+    <!-- =====================================================
+         SELEÇÃO DOS LOGOS
+    ===================================================== -->
+
+    <div class="campo">
+
+        <label>
+            Logotipos da assinatura:
+        </label>
+
+
+        <div class="logos-selecao">
+
+
+            <label class="logo-check">
+
+                <input
+                    type="checkbox"
+                    id="logoEngepar"
+                    value="engepar"
+                    onchange="atualizarSelecaoLogos()"
+                >
+
+                <strong>
+                    Engepar
+                </strong>
+
+            </label>
+
+
+            <label class="logo-check">
+
+                <input
+                    type="checkbox"
+                    id="logoCvs"
+                    value="cvs"
+                    onchange="atualizarSelecaoLogos()"
+                >
+
+                <strong>
+                    CVS
+                </strong>
+
+            </label>
+
+
+            <label class="logo-check">
+
+                <input
+                    type="checkbox"
+                    id="logoDomPedro"
+                    value="dompedro"
+                    onchange="atualizarSelecaoLogos()"
+                >
+
+                <strong>
+                    Dom Pedro
+                </strong>
+
+            </label>
+
+
+            <label class="logo-check">
+
+                <input
+                    type="checkbox"
+                    id="logoTamarana"
+                    value="tamarana"
+                    onchange="atualizarSelecaoLogos()"
+                >
+
+                <strong>
+                    Tamarana
+                </strong>
+
+            </label>
+
+
+            <div
+                id="contadorLogos"
+                class="contador-logos"
+            >
+                Nenhum logo selecionado.
+            </div>
+
+
+            <div
+                id="avisoLogos"
+                class="aviso-logos"
+            >
+                Selecione no máximo 4 logos.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         TAMANHO DOS LOGOS
+    ===================================================== -->
+
+    <div class="campo">
+
+        <label for="larguraLogo">
+
+            Largura dos Logotipos (px):
+
+        </label>
+
+
+        <input
+            type="number"
+            id="larguraLogo"
+            value="110"
+            min="30"
+            max="180"
+            oninput="atualizarAssinatura()"
+        >
+
+
+        <div class="ajuda">
+
+            Para 3 ou 4 logos, o gerador ajustará
+            automaticamente a disposição para manter
+            uma aparência equilibrada.
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         NOME
+    ===================================================== -->
+
+    <div class="campo">
+
+        <label for="nome">
+
+            Nome Completo:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="nome"
+            value="Nome do Funcionário"
+            oninput="atualizarAssinatura()"
+        >
+
+    </div>
+
+
+    <!-- =====================================================
+         CARGO
+    ===================================================== -->
+
+    <div class="campo">
+
+        <label for="cargo">
+
+            Cargo:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="cargo"
+            value="Cargo"
+            placeholder="Ex: Coordenador de TI"
+            oninput="atualizarAssinatura()"
+        >
+
+    </div>
+
+
+    <!-- =====================================================
+         DEPARTAMENTO
+    ===================================================== -->
+
+    <div class="campo">
+
+        <label for="departamento">
+
+            Departamento:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="departamento"
+            value="Tecnologia da Informação"
+            placeholder="Ex: Tecnologia da Informação"
+            oninput="atualizarAssinatura()"
+        >
+
+
+        <div class="ajuda">
+
+            O caractere "|" será inserido automaticamente
+            entre Cargo e Departamento.
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         EMAIL
+    ===================================================== -->
+
+    <div class="campo">
+
+        <label for="email">
+
+            E-mail:
+
+        </label>
+
+
+        <input
+            type="email"
+            id="email"
+            value="funcionario@engepar.com"
+            oninput="atualizarAssinatura()"
+        >
+
+    </div>
+
+
+    <!-- =====================================================
+         TELEFONE
+    ===================================================== -->
+
+    <div class="campo">
+
+        <label for="telefone">
+
+            Telefone:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="telefone"
+            value="(67) 0000-0000"
+            oninput="atualizarAssinatura()"
+        >
+
+    </div>
+
+
+    <!-- =====================================================
+         EMPRESA
+    ===================================================== -->
+
+    <div class="campo">
+
+        <label for="empresa">
+
+            Nome da Empresa:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="empresa"
+            value="Engepar Engenharia e Participações Ltda."
+            oninput="atualizarAssinatura()"
+        >
+
+    </div>
+
+
+    <!-- =====================================================
+         SITE
+    ===================================================== -->
+
+    <div class="campo">
+
+        <label for="site">
+
+            Site da Empresa:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="site"
+            value="www.engepar.com"
+            oninput="atualizarAssinatura()"
+        >
+
+    </div>
+
+
+    <!-- =====================================================
+         FRASE DE EFEITO
+    ===================================================== -->
+
+    <div class="campo">
+
+        <label for="fraseEmpresa">
+
+            Frase de efeito / Slogan da empresa:
+
+        </label>
+
+
+        <textarea
+            id="fraseEmpresa"
+            placeholder="Ex: Engenharia que transforma ideias em grandes resultados."
+            oninput="atualizarAssinatura()"
+        ></textarea>
+
+
+        <div class="ajuda">
+
+            Opcional. A frase será exibida abaixo
+            do nome da empresa e do site.
+
+        </div>
+
+    </div>
+
+
+    <hr class="separador">
+
+
+    <!-- =====================================================
+         REDES SOCIAIS
+    ===================================================== -->
+
+    <h3
+        style="
+            font-size:15px;
+            margin-top:20px;
+            color:#333;
+        "
+    >
+
+        Redes Sociais
+
+    </h3>
+
+
+    <p
+        style="
+            font-size:12px;
+            color:#777;
+        "
+    >
+
+        Deixe em branco para ocultar o ícone.
+
+    </p>
+
+
+    <!-- WHATSAPP -->
+
+    <div class="campo">
+
+        <label for="linkWa">
+
+            WhatsApp:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="linkWa"
+            value=""
+            placeholder="(67) 99999-8888"
+            oninput="
+                formatarWhatsApp(this);
+                atualizarAssinatura();
+            "
+        >
+
+
+        <div class="ajuda">
+
+            Digite somente o número.
+            O link wa.me será criado automaticamente.
+
+        </div>
+
+    </div>
+
+
+    <!-- TEAMS -->
+
+    <div class="campo">
+
+        <label for="linkTeams">
+
+            Microsoft Teams / E-mail corporativo:
+
+        </label>
+
+
+        <input
+            type="email"
+            id="linkTeams"
+            value=""
+            placeholder="usuario@empresa.com"
+            oninput="atualizarAssinatura()"
+        >
+
+
+        <div class="ajuda">
+
+            Digite o e-mail corporativo.
+            O link de chat do Teams será criado automaticamente.
+
+        </div>
+
+    </div>
+
+
+    <!-- YOUTUBE -->
+
+    <div class="campo">
+
+        <label for="linkYt">
+
+            YouTube:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="linkYt"
+            value="https://www.youtube.com/engepar"
+            placeholder="https://youtube.com/..."
+            oninput="atualizarAssinatura()"
+        >
+
+    </div>
+
+
+    <!-- FACEBOOK -->
+
+    <div class="campo">
+
+        <label for="linkFb">
+
+            Facebook:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="linkFb"
+            value="https://www.facebook.com/engeparonline/?locale=pt_BR"
+            placeholder="https://facebook.com/..."
+            oninput="atualizarAssinatura()"
+        >
+
+    </div>
+
+
+    <!-- INSTAGRAM -->
+
+    <div class="campo">
+
+        <label for="linkIg">
+
+            Instagram:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="linkIg"
+            value="https://www.instagram.com/engeparonline/"
+            placeholder="https://instagram.com/..."
+            oninput="atualizarAssinatura()"
+        >
+
+    </div>
+
+
+    <!-- X -->
+
+    <div class="campo">
+
+        <label for="linkTw">
+
+            Twitter / X:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="linkTw"
+            value=""
+            placeholder="https://x.com/..."
+            oninput="atualizarAssinatura()"
+        >
+
+    </div>
+
+
+    <!-- LINKEDIN -->
+
+    <div class="campo">
+
+        <label for="linkIn">
+
+            LinkedIn:
+
+        </label>
+
+
+        <input
+            type="text"
+            id="linkIn"
+            value=""
+            placeholder="https://linkedin.com/..."
+            oninput="atualizarAssinatura()"
+        >
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     PREVIEW
+========================================================= -->
+
+<div class="preview-box">
+
+
+    <div>
+
+        <h2>
+            Visualização
+        </h2>
+
+
+        <p
+            style="
+                font-size:12px;
+                color:#777;
+            "
+        >
+
+            Os ícones sociais abaixo só aparecem
+            se preenchidos.
+
+        </p>
+
+
+        <div class="info-logo">
+
+            <strong>Logos disponíveis:</strong>
+
+            <br>
+
+            Engepar:
+            https://i.ibb.co/DPVBKwZk/Screenshot-1.png
+
+            <br>
+
+            CVS:
+            https://i.ibb.co/hRsTbwqr/image-b0982fd8.png
+
+            <br>
+
+            Dom Pedro:
+            https://i.ibb.co/v8nGFpQ/image-28ff0223.png
+
+            <br>
+
+            Tamarana:
+            https://i.ibb.co/4gtgyZqr/image-82f971aa-removebg-preview.png
+
+        </div>
+
+
+        <br>
+
+
+        <div
+            id="assinaturaRenderizada"
+            class="resultado"
+        ></div>
+
+    </div>
+
+
+    <button
+        class="btn-copiar"
+        onclick="copiarAssinatura()"
+    >
+
+        Copiar Assinatura
+
+    </button>
+
+</div>
+
+
+
+<script>
+
+
+/* =========================================================
+   LINKS DAS LOGOS
+========================================================= */
+
+var logosDisponiveis = {
+
+    engepar:
+        'https://i.ibb.co/DPVBKwZk/Screenshot-1.png',
+
+    cvs:
+        'https://i.ibb.co/hRsTbwqr/image-b0982fd8.png',
+
+    dompedro:
+        'https://i.ibb.co/v8nGFpQ/image-28ff0223.png',
+
+    tamarana:
+        'https://i.ibb.co/4gtgyZqr/image-82f971aa-removebg-preview.png'
+
+};
+
+
+
+/* =========================================================
+   ATUALIZA SELEÇÃO DOS LOGOS
+========================================================= */
+
+function atualizarSelecaoLogos() {
+
+    var checkboxes =
+        document.querySelectorAll(
+            '.logo-check input[type="checkbox"]'
+        );
+
+
+    var selecionados = 0;
+
+
+    checkboxes.forEach(
+        function(checkbox) {
+
+            if (checkbox.checked) {
+
+                selecionados++;
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        'contadorLogos'
+    ).textContent =
+
+        selecionados === 0
+
+            ? 'Nenhum logo selecionado.'
+
+            : selecionados +
+              (
+                  selecionados === 1
+                      ? ' logo selecionado.'
+                      : ' logos selecionados.'
+              );
+
+
+    document.getElementById(
+        'avisoLogos'
+    ).style.display =
+
+        selecionados > 4
+            ? 'block'
+            : 'none';
+
+
+    atualizarAssinatura();
+
+}
+
+
+
+/* =========================================================
+   OBTÉM LOGOS SELECIONADOS
+========================================================= */
+
+function obterLogosSelecionados() {
+
+    var logos = [];
+
+
+    if (
+        document.getElementById(
+            'logoEngepar'
+        ).checked
+    ) {
+
+        logos.push({
+
+            url:
+                logosDisponiveis.engepar,
+
+            alt:
+                'Engepar'
+
+        });
+
+    }
+
+
+    if (
+        document.getElementById(
+            'logoCvs'
+        ).checked
+    ) {
+
+        logos.push({
+
+            url:
+                logosDisponiveis.cvs,
+
+            alt:
+                'CVS'
+
+        });
+
+    }
+
+
+    if (
+        document.getElementById(
+            'logoDomPedro'
+        ).checked
+    ) {
+
+        logos.push({
+
+            url:
+                logosDisponiveis.dompedro,
+
+            alt:
+                'Dom Pedro'
+
+        });
+
+    }
+
+
+    if (
+        document.getElementById(
+            'logoTamarana'
+        ).checked
+    ) {
+
+        logos.push({
+
+            url:
+                logosDisponiveis.tamarana,
+
+            alt:
+                'Tamarana'
+
+        });
+
+    }
+
+
+    return logos;
+
+}
+
+
+
+/* =========================================================
+   MÁSCARA WHATSAPP
+========================================================= */
+
+function formatarWhatsApp(campo) {
+
+    var valor =
+        campo.value.replace(
+            /\D/g,
+            ''
+        );
+
+
+    if (
+        valor.startsWith('55') &&
+        valor.length >= 12
+    ) {
+
+        valor =
+            valor.substring(2);
+
+    }
+
+
+    valor =
+        valor.substring(
+            0,
+            11
+        );
+
+
+    if (
+        valor.length <= 2
+    ) {
+
+        campo.value =
+            valor;
+
+    }
+
+    else if (
+        valor.length <= 7
+    ) {
+
+        campo.value =
+            '(' +
+            valor.substring(0, 2) +
+            ') ' +
+            valor.substring(2);
+
+    }
+
+    else {
+
+        campo.value =
+            '(' +
+            valor.substring(0, 2) +
+            ') ' +
+            valor.substring(2, 7) +
+            '-' +
+            valor.substring(7);
+
+    }
+
+}
+
+
+
+/* =========================================================
+   LINK WHATSAPP
+========================================================= */
+
+function gerarLinkWhatsApp(numero) {
+
+    var somenteNumeros =
+        numero.replace(
+            /\D/g,
+            ''
+        );
+
+
+    if (
+        somenteNumeros.startsWith('55') &&
+        somenteNumeros.length >= 12
+    ) {
+
+        somenteNumeros =
+            somenteNumeros.substring(2);
+
+    }
+
+
+    if (
+        somenteNumeros.length >= 10
+    ) {
+
+        return (
+            'https://wa.me/55' +
+            somenteNumeros
+        );
+
+    }
+
+
+    return '';
+
+}
+
+
+
+/* =========================================================
+   LINK MICROSOFT TEAMS
+========================================================= */
+
+function gerarLinkTeams(email) {
+
+    email =
+        email.trim();
+
+
+    if (!email) {
+
+        return '';
+
+    }
+
+
+    return (
+        'https://teams.microsoft.com/l/chat/0/0?users=' +
+        encodeURIComponent(email)
+    );
+
+}
+
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escaparHTML(texto) {
+
+    return String(texto)
+
+        .replace(
+            /&/g,
+            '&amp;'
+        )
+
+        .replace(
+            /</g,
+            '&lt;'
+        )
+
+        .replace(
+            />/g,
+            '&gt;'
+        )
+
+        .replace(
+            /"/g,
+            '&quot;'
+        )
+
+        .replace(
+            /'/g,
+            '&#039;'
+        );
+
+}
+
+
+
+/* =========================================================
+   ATUALIZAR ASSINATURA
+========================================================= */
+
+function atualizarAssinatura() {
+
+
+    /* =====================================================
+       LOGOS
+    ===================================================== */
+
+    var logos =
+        obterLogosSelecionados();
+
+
+    var qtdLogos =
+        logos.length;
+
+
+    var larguraLogo =
+        parseInt(
+            document.getElementById(
+                'larguraLogo'
+            ).value
+        ) || 110;
+
+
+
+    /* =====================================================
+       DADOS PESSOAIS
+    ===================================================== */
+
+    var nome =
+        document.getElementById(
+            'nome'
+        ).value.trim();
+
+
+    var cargo =
+        document.getElementById(
+            'cargo'
+        ).value.trim();
+
+
+    var departamento =
+        document.getElementById(
+            'departamento'
+        ).value.trim();
+
+
+    var email =
+        document.getElementById(
+            'email'
+        ).value.trim();
+
+
+    var tel =
+        document.getElementById(
+            'telefone'
+        ).value.trim();
+
+
+    var empresa =
+        document.getElementById(
+            'empresa'
+        ).value.trim();
+
+
+    var site =
+        document.getElementById(
+            'site'
+        ).value.trim();
+
+
+    var fraseEmpresa =
+        document.getElementById(
+            'fraseEmpresa'
+        ).value.trim();
+
+
+
+    /* =====================================================
+       CARGO + DEPARTAMENTO
+    ===================================================== */
+
+    var cargoDepartamento = '';
+
+
+    if (
+        cargo &&
+        departamento
+    ) {
+
+        cargoDepartamento =
+            cargo +
+            ' | ' +
+            departamento;
+
+    }
+
+    else if (cargo) {
+
+        cargoDepartamento =
+            cargo;
+
+    }
+
+    else if (departamento) {
+
+        cargoDepartamento =
+            departamento;
+
+    }
+
+
+
+    /* =====================================================
+       LINKS SOCIAIS
+    ===================================================== */
+
+    var whatsappDigitado =
+        document.getElementById(
+            'linkWa'
+        ).value;
+
+
+    var linkWa =
+        gerarLinkWhatsApp(
+            whatsappDigitado
+        );
+
+
+    var emailTeams =
+        document.getElementById(
+            'linkTeams'
+        ).value;
+
+
+    var linkTeams =
+        gerarLinkTeams(
+            emailTeams
+        );
+
+
+    var linkYt =
+        document.getElementById(
+            'linkYt'
+        ).value.trim();
+
+
+    var linkFb =
+        document.getElementById(
+            'linkFb'
+        ).value.trim();
+
+
+    var linkIg =
+        document.getElementById(
+            'linkIg'
+        ).value.trim();
+
+
+    var linkTw =
+        document.getElementById(
+            'linkTw'
+        ).value.trim();
+
+
+    var linkIn =
+        document.getElementById(
+            'linkIn'
+        ).value.trim();
+
+
+
+    /* =====================================================
+       TELEFONE
+    ===================================================== */
+
+    var numTelefone =
+        tel.replace(
+            /[^0-9]/g,
+            ''
+        );
+
+
+
+    /* =====================================================
+       TAMANHO AUTOMÁTICO DOS LOGOS
+    ===================================================== */
+
+    var tamanhoLogo =
+        larguraLogo;
+
+
+    if (
+        qtdLogos === 3
+    ) {
+
+        tamanhoLogo =
+            Math.min(
+                larguraLogo,
+                95
+            );
+
+    }
+
+
+    if (
+        qtdLogos === 4
+    ) {
+
+        tamanhoLogo =
+            Math.min(
+                larguraLogo,
+                80
+            );
+
+    }
+
+
+
+    /* =====================================================
+       DISPOSIÇÃO DOS LOGOS
+    ===================================================== */
+
+    var estruturaLogos = '';
+
+
+    /*
+     * 1 logo
+     * -----------------------------------------
+     * Centralizado
+     */
+
+
+    if (
+        qtdLogos === 1
+    ) {
+
+        estruturaLogos =
+
+            '<table cellpadding="0" cellspacing="0" border="0" ' +
+            'style="margin:0 auto;">' +
+
+                '<tr>' +
+
+                    '<td style="text-align:center;">' +
+
+                        '<img ' +
+                        'src="' +
+                        logos[0].url +
+                        '" ' +
+                        'alt="' +
+                        escaparHTML(
+                            logos[0].alt
+                        ) +
+                        '" ' +
+                        'width="' +
+                        tamanhoLogo +
+                        '" ' +
+
+                        'style="' +
+                            'display:block;' +
+                            'width:' +
+                            tamanhoLogo +
+                            'px;' +
+                            'height:auto;' +
+                            'margin:0 auto;' +
+                            'border:0;' +
+                            'outline:none;' +
+                        '">' +
+
+                    '</td>' +
+
+                '</tr>' +
+
+            '</table>';
+
+    }
+
+
+
+    /*
+     * 2 logos
+     * -----------------------------------------
+     * Lado a lado
+     */
+
+
+    else if (
+        qtdLogos === 2
+    ) {
+
+        estruturaLogos =
+
+            '<table cellpadding="0" cellspacing="0" border="0" ' +
+            'style="margin:0 auto;">' +
+
+                '<tr>' +
+
+
+                    '<td valign="middle" ' +
+                    'style="text-align:center;padding:4px;">' +
+
+                        '<img ' +
+                        'src="' +
+                        logos[0].url +
+                        '" ' +
+                        'alt="' +
+                        escaparHTML(
+                            logos[0].alt
+                        ) +
+                        '" ' +
+                        'width="' +
+                        tamanhoLogo +
+                        '" ' +
+
+                        'style="' +
+                            'display:block;' +
+                            'width:' +
+                            tamanhoLogo +
+                            'px;' +
+                            'height:auto;' +
+                            'margin:0 auto;' +
+                            'border:0;' +
+                        '">' +
+
+                    '</td>' +
+
+
+                    '<td valign="middle" ' +
+                    'style="text-align:center;padding:4px;">' +
+
+                        '<img ' +
+                        'src="' +
+                        logos[1].url +
+                        '" ' +
+                        'alt="' +
+                        escaparHTML(
+                            logos[1].alt
+                        ) +
+                        '" ' +
+                        'width="' +
+                        tamanhoLogo +
+                        '" ' +
+
+                        'style="' +
+                            'display:block;' +
+                            'width:' +
+                            tamanhoLogo +
+                            'px;' +
+                            'height:auto;' +
+                            'margin:0 auto;' +
+                            'border:0;' +
+                        '">' +
+
+                    '</td>' +
+
+
+                '</tr>' +
+
+            '</table>';
+
+    }
+
+
+
+    /*
+     * 3 logos
+     * -----------------------------------------
+     * 2 em cima + 1 embaixo centralizado
+     */
+
+
+    else if (
+        qtdLogos === 3
+    ) {
+
+        estruturaLogos =
+
+            '<table cellpadding="0" cellspacing="0" border="0" ' +
+            'style="margin:0 auto;">' +
+
+
+                '<tr>' +
+
+                    '<td valign="middle" ' +
+                    'style="text-align:center;padding:3px;">' +
+
+                        '<img ' +
+                        'src="' +
+                        logos[0].url +
+                        '" ' +
+                        'alt="' +
+                        escaparHTML(
+                            logos[0].alt
+                        ) +
+                        '" ' +
+                        'width="' +
+                        tamanhoLogo +
+                        '" ' +
+
+                        'style="' +
+                            'display:block;' +
+                            'width:' +
+                            tamanhoLogo +
+                            'px;' +
+                            'height:auto;' +
+                            'margin:0 auto;' +
+                            'border:0;' +
+                        '">' +
+
+                    '</td>' +
+
+
+                    '<td valign="middle" ' +
+                    'style="text-align:center;padding:3px;">' +
+
+                        '<img ' +
+                        'src="' +
+                        logos[1].url +
+                        '" ' +
+                        'alt="' +
+                        escaparHTML(
+                            logos[1].alt
+                        ) +
+                        '" ' +
+                        'width="' +
+                        tamanhoLogo +
+                        '" ' +
+
+                        'style="' +
+                            'display:block;' +
+                            'width:' +
+                            tamanhoLogo +
+                            'px;' +
+                            'height:auto;' +
+                            'margin:0 auto;' +
+                            'border:0;' +
+                        '">' +
+
+                    '</td>' +
+
+                '</tr>' +
+
+
+                '<tr>' +
+
+                    '<td colspan="2" ' +
+                    'style="text-align:center;padding:3px;">' +
+
+                        '<img ' +
+                        'src="' +
+                        logos[2].url +
+                        '" ' +
+                        'alt="' +
+                        escaparHTML(
+                            logos[2].alt
+                        ) +
+                        '" ' +
+                        'width="' +
+                        tamanhoLogo +
+                        '" ' +
+
+                        'style="' +
+                            'display:block;' +
+                            'width:' +
+                            tamanhoLogo +
+                            'px;' +
+                            'height:auto;' +
+                            'margin:0 auto;' +
+                            'border:0;' +
+                        '">' +
+
+                    '</td>' +
+
+                '</tr>' +
+
+
+            '</table>';
+
+    }
+
+
+
+    /*
+     * 4 logos
+     * -----------------------------------------
+     * 2 em cima + 2 embaixo
+     */
+
+
+    else if (
+        qtdLogos === 4
+    ) {
+
+        estruturaLogos =
+
+            '<table cellpadding="0" cellspacing="0" border="0" ' +
+            'style="margin:0 auto;">' +
+
+
+                '<tr>' +
+
+                    '<td valign="middle" ' +
+                    'style="text-align:center;padding:3px;">' +
+
+                        '<img ' +
+                        'src="' +
+                        logos[0].url +
+                        '" ' +
+                        'alt="' +
+                        escaparHTML(
+                            logos[0].alt
+                        ) +
+                        '" ' +
+                        'width="' +
+                        tamanhoLogo +
+                        '" ' +
+
+                        'style="' +
+                            'display:block;' +
+                            'width:' +
+                            tamanhoLogo +
+                            'px;' +
+                            'height:auto;' +
+                            'margin:0 auto;' +
+                            'border:0;' +
+                        '">' +
+
+                    '</td>' +
+
+
+                    '<td valign="middle" ' +
+                    'style="text-align:center;padding:3px;">' +
+
+                        '<img ' +
+                        'src="' +
+                        logos[1].url +
+                        '" ' +
+                        'alt="' +
+                        escaparHTML(
+                            logos[1].alt
+                        ) +
+                        '" ' +
+                        'width="' +
+                        tamanhoLogo +
+                        '" ' +
+
+                        'style="' +
+                            'display:block;' +
+                            'width:' +
+                            tamanhoLogo +
+                            'px;' +
+                            'height:auto;' +
+                            'margin:0 auto;' +
+                            'border:0;' +
+                        '">' +
+
+                    '</td>' +
+
+                '</tr>' +
+
+
+                '<tr>' +
+
+                    '<td valign="middle" ' +
+                    'style="text-align:center;padding:3px;">' +
+
+                        '<img ' +
+                        'src="' +
+                        logos[2].url +
+                        '" ' +
+                        'alt="' +
+                        escaparHTML(
+                            logos[2].alt
+                        ) +
+                        '" ' +
+                        'width="' +
+                        tamanhoLogo +
+                        '" ' +
+
+                        'style="' +
+                            'display:block;' +
+                            'width:' +
+                            tamanhoLogo +
+                            'px;' +
+                            'height:auto;' +
+                            'margin:0 auto;' +
+                            'border:0;' +
+                        '">' +
+
+                    '</td>' +
+
+
+                    '<td valign="middle" ' +
+                    'style="text-align:center;padding:3px;">' +
+
+                        '<img ' +
+                        'src="' +
+                        logos[3].url +
+                        '" ' +
+                        'alt="' +
+                        escaparHTML(
+                            logos[3].alt
+                        ) +
+                        '" ' +
+                        'width="' +
+                        tamanhoLogo +
+                        '" ' +
+
+                        'style="' +
+                            'display:block;' +
+                            'width:' +
+                            tamanhoLogo +
+                            'px;' +
+                            'height:auto;' +
+                            'margin:0 auto;' +
+                            'border:0;' +
+                        '">' +
+
+                    '</td>' +
+
+                '</tr>' +
+
+
+            '</table>';
+
+    }
+
+
+
+    /*
+     * Nenhum logo
+     */
+
+
+    else {
+
+        estruturaLogos =
+
+            '<div style="' +
+                'font-family:Arial,sans-serif;' +
+                'font-size:11px;' +
+                'color:#999;' +
+                'text-align:center;' +
+                'padding:15px;' +
+            '">' +
+
+                'Nenhum logo selecionado' +
+
+            '</div>';
+
+    }
+
+
+
+    /* =====================================================
+       LARGURA DA COLUNA
+    ===================================================== */
+
+    var larguraColunaEsquerda;
+
+
+    if (
+        qtdLogos <= 1
+    ) {
+
+        larguraColunaEsquerda =
+            '155px';
+
+    }
+
+    else if (
+        qtdLogos === 2
+    ) {
+
+        larguraColunaEsquerda =
+            '250px';
+
+    }
+
+    else if (
+        qtdLogos === 3
+    ) {
+
+        larguraColunaEsquerda =
+            '270px';
+
+    }
+
+    else {
+
+        larguraColunaEsquerda =
+            '270px';
+
+    }
+
+
+
+    /* =====================================================
+       LARGURA TOTAL
+    ===================================================== */
+
+    var larguraTotalTabela;
+
+
+    if (
+        qtdLogos <= 1
+    ) {
+
+        larguraTotalTabela =
+            '600px';
+
+    }
+
+    else if (
+        qtdLogos === 2
+    ) {
+
+        larguraTotalTabela =
+            '680px';
+
+    }
+
+    else {
+
+        larguraTotalTabela =
+            '700px';
+
+    }
+
+
+
+    /* =====================================================
+       ÍCONES SOCIAIS
+    ===================================================== */
+
+    var iconStyle =
+
+        'display:block;' +
+        'width:17px;' +
+        'height:17px;' +
+        'border:0;' +
+        'outline:none;' +
+        'text-decoration:none;';
+
+
+    var redes = [];
+
+
+
+    /* WHATSAPP */
+
+    if (linkWa) {
+
+        redes.push({
+
+            url:
+                linkWa,
+
+            imagem:
+                'https://cdn-icons-png.flaticon.com/16/1384/1384055.png',
+
+            alt:
+                'WhatsApp'
+
+        });
+
+    }
+
+
+
+    /* TEAMS */
+
+    if (linkTeams) {
+
+        redes.push({
+
+            url:
+                linkTeams,
+
+            imagem:
+                'https://cdn-icons-png.flaticon.com/16/15047/15047490.png',
+
+            alt:
+                'Microsoft Teams'
+
+        });
+
+    }
+
+
+
+    /* YOUTUBE */
+
+    if (linkYt) {
+
+        redes.push({
+
+            url:
+                linkYt,
+
+            imagem:
+                'https://cdn-icons-png.flaticon.com/16/1384/1384060.png',
+
+            alt:
+                'YouTube'
+
+        });
+
+    }
+
+
+
+    /* FACEBOOK */
+
+    if (linkFb) {
+
+        redes.push({
+
+            url:
+                linkFb,
+
+            imagem:
+                'https://cdn-icons-png.flaticon.com/16/733/733547.png',
+
+            alt:
+                'Facebook'
+
+        });
+
+    }
+
+
+
+    /* INSTAGRAM */
+
+    if (linkIg) {
+
+        redes.push({
+
+            url:
+                linkIg,
+
+            imagem:
+                'https://cdn-icons-png.flaticon.com/16/2111/2111463.png',
+
+            alt:
+                'Instagram'
+
+        });
+
+    }
+
+
+
+    /* X */
+
+    if (linkTw) {
+
+        redes.push({
+
+            url:
+                linkTw,
+
+            imagem:
+                'https://cdn-icons-png.flaticon.com/16/733/733579.png',
+
+            alt:
+                'X / Twitter'
+
+        });
+
+    }
+
+
+
+    /* LINKEDIN */
+
+    if (linkIn) {
+
+        redes.push({
+
+            url:
+                linkIn,
+
+            imagem:
+                'https://cdn-icons-png.flaticon.com/16/145/145807.png',
+
+            alt:
+                'LinkedIn'
+
+        });
+
+    }
+
+
+
+    /*
+     * Tabela fixa para os ícones.
+     *
+     * Isso evita que o espaçamento
+     * seja alterado por diferentes
+     * clientes de e-mail.
+     */
+
+    var redesSociaisHtml = '';
+
+
+    if (
+        redes.length > 0
+    ) {
+
+        redesSociaisHtml =
+
+            '<table cellpadding="0" cellspacing="0" border="0" ' +
+            'style="margin:0 auto;">' +
+
+                '<tr>';
+
+
+        redes.forEach(
+
+            function(rede) {
+
+                redesSociaisHtml +=
+
+                    '<td valign="middle" ' +
+                    'style="' +
+                        'padding:0 4px;' +
+                        'text-align:center;' +
+                        'vertical-align:middle;' +
+                    '">' +
+
+                        '<a ' +
+                        'href="' +
+                        rede.url +
+                        '" ' +
+                        'target="_blank" ' +
+                        'rel="noopener noreferrer" ' +
+                        'style="' +
+                            'display:block;' +
+                            'text-decoration:none;' +
+                        '">' +
+
+                            '<img ' +
+                            'src="' +
+                            rede.imagem +
+                            '" ' +
+                            'alt="' +
+                            rede.alt +
+                            '" ' +
+                            'title="' +
+                            rede.alt +
+                            '" ' +
+                            'width="17" ' +
+                            'height="17" ' +
+                            'style="' +
+                                iconStyle +
+                            '">' +
+
+                        '</a>' +
+
+                    '</td>';
+
+            }
+
+        );
+
+
+        redesSociaisHtml +=
+
+                '</tr>' +
+
+            '</table>';
+
+    }
+
+
+
+    /* =====================================================
+       SITE
+    ===================================================== */
+
+    var siteLink =
+        site;
+
+
+    if (
+        site &&
+        !site.match(
+            /^https?:\/\//i
+        )
+    ) {
+
+        siteLink =
+            'https://' +
+            site;
+
+    }
+
+
+
+    /* =====================================================
+       FRASE
+    ===================================================== */
+
+    var fraseHtml = '';
+
+
+    if (
+        fraseEmpresa
+    ) {
+
+        fraseHtml =
+
+            '<div style="' +
+
+                'font-family:Arial,' +
+                '"Segoe UI",' +
+                'Helvetica,' +
+                'sans-serif;' +
+
+                'font-size:11px;' +
+
+                'line-height:15px;' +
+
+                'color:#717171;' +
+
+                'font-style:italic;' +
+
+                'margin-top:5px;' +
+
+            '">' +
+
+                escaparHTML(
+                    fraseEmpresa
+                ) +
+
+            '</div>';
+
+    }
+
+
+
+    /* =====================================================
+       TEMPLATE DA ASSINATURA
+    ===================================================== */
+
+    var template =
+
+
+        '<table ' +
+
+        'cellpadding="0" ' +
+        'cellspacing="0" ' +
+        'border="0" ' +
+
+        'style="' +
+
+            'font-family:Arial,' +
+            '"Segoe UI",' +
+            'Helvetica,sans-serif;' +
+
+            'background-color:#ffffff;' +
+
+            'border-collapse:collapse;' +
+
+            'width:' +
+            larguraTotalTabela +
+            ';' +
+
+            'line-height:1.4;' +
+
+        '">' +
+
+
+
+        /* =================================================
+           LINHA SUPERIOR
+        ================================================= */
+
+        '<tr>' +
+
+            '<td colspan="2" ' +
+
+            'style="' +
+
+                'border-top:2px solid #717171;' +
+
+                'padding-top:12px;' +
+
+                'font-size:1px;' +
+
+                'line-height:1px;' +
+
+            '">' +
+
+                '&nbsp;' +
+
+            '</td>' +
+
+        '</tr>' +
+
+
+
+        /* =================================================
+           CONTEÚDO PRINCIPAL
+        ================================================= */
+
+        '<tr>' +
+
+
+            /* =============================================
+               LOGOS
+            ============================================= */
+
+            '<td valign="middle" ' +
+
+            'style="' +
+
+                'width:' +
+                larguraColunaEsquerda +
+                ';' +
+
+                'text-align:center;' +
+
+                'padding:8px 18px 8px 5px;' +
+
+                'border-right:1px solid #717171;' +
+
+                'vertical-align:middle;' +
+
+            '">' +
+
+
+                '<div style="' +
+
+                    'text-align:center;' +
+
+                    'width:100%;' +
+
+                    'margin:0 auto 12px auto;' +
+
+                '">' +
+
+                    estruturaLogos +
+
+                '</div>' +
+
+
+
+                '<div style="' +
+
+                    'text-align:center;' +
+
+                    'width:100%;' +
+
+                    'margin:0 auto;' +
+
+                '">' +
+
+                    redesSociaisHtml +
+
+                '</div>' +
+
+
+            '</td>' +
+
+
+
+            /* =============================================
+               DADOS
+            ============================================= */
+
+            '<td valign="middle" ' +
+
+            'style="' +
+
+                'text-align:left;' +
+
+                'padding:8px 10px 8px 20px;' +
+
+                'vertical-align:middle;' +
+
+            '">' +
+
+
+
+                /* NOME */
+
+                '<div style="' +
+
+                    'font-family:Arial,' +
+                    '"Segoe UI",' +
+                    'Helvetica,sans-serif;' +
+
+                    'font-size:17px;' +
+
+                    'line-height:20px;' +
+
+                    'font-weight:bold;' +
+
+                    'color:#f2b01e;' +
+
+                    'margin-bottom:3px;' +
+
+                '">' +
+
+                    escaparHTML(
+                        nome
+                    ) +
+
+                '</div>' +
+
+
+
+                /* CARGO + DEPARTAMENTO */
+
+                '<div style="' +
+
+                    'font-family:Arial,' +
+                    '"Segoe UI",' +
+                    'Helvetica,sans-serif;' +
+
+                    'font-size:12px;' +
+
+                    'line-height:16px;' +
+
+                    'color:#003366;' +
+
+                    'font-weight:600;' +
+
+                    'margin-bottom:9px;' +
+
+                '">' +
+
+                    escaparHTML(
+                        cargoDepartamento
+                    ) +
+
+                '</div>' +
+
+
+
+                /* EMAIL */
+
+                '<div style="' +
+
+                    'margin-bottom:3px;' +
+
+                '">' +
+
+                    '<a href="mailto:' +
+
+                    email +
+
+                    '" ' +
+
+                    'style="' +
+
+                        'font-family:Arial,' +
+                        '"Segoe UI",' +
+                        'Helvetica,sans-serif;' +
+
+                        'font-size:12px;' +
+
+                        'line-height:16px;' +
+
+                        'color:#003366;' +
+
+                        'text-decoration:underline;' +
+
+                    '">' +
+
+                        escaparHTML(
+                            email
+                        ) +
+
+                    '</a>' +
+
+                '</div>' +
+
+
+
+                /* TELEFONE */
+
+                '<div style="' +
+
+                    'margin-bottom:4px;' +
+
+                '">' +
+
+                    '<a href="tel:' +
+
+                    numTelefone +
+
+                    '" ' +
+
+                    'style="' +
+
+                        'font-family:Arial,' +
+                        '"Segoe UI",' +
+                        'Helvetica,sans-serif;' +
+
+                        'font-size:12px;' +
+
+                        'line-height:16px;' +
+
+                        'color:#003366;' +
+
+                        'text-decoration:underline;' +
+
+                    '">' +
+
+                        escaparHTML(
+                            tel
+                        ) +
+
+                    '</a>' +
+
+                '</div>' +
+
+
+
+                /* EMPRESA + SITE */
+
+                '<div style="' +
+
+                    'font-family:Arial,' +
+                    '"Segoe UI",' +
+                    'Helvetica,sans-serif;' +
+
+                    'font-size:11px;' +
+
+                    'line-height:16px;' +
+
+                    'color:#333333;' +
+
+                    'margin-top:6px;' +
+
+                '">' +
+
+
+                    '<span style="' +
+
+                        'font-weight:bold;' +
+
+                        'color:#003366;' +
+
+                    '">' +
+
+                        escaparHTML(
+                            empresa
+                        ) +
+
+                    '</span>' +
+
+
+                    '<span style="' +
+
+                        'color:#717171;' +
+
+                        'padding:0 5px;' +
+
+                    '">' +
+
+                        '|' +
+
+                    '</span>' +
+
+
+                    '<a href="' +
+
+                    siteLink +
+
+                    '" ' +
+
+                    'target="_blank" ' +
+
+                    'rel="noopener noreferrer" ' +
+
+                    'style="' +
+
+                        'color:#003366;' +
+
+                        'text-decoration:underline;' +
+
+                    '">' +
+
+                        escaparHTML(
+                            site
+                        ) +
+
+                    '</a>' +
+
+
+                '</div>' +
+
+
+
+                /* FRASE */
+
+                fraseHtml +
+
+
+            '</td>' +
+
+
+        '</tr>' +
+
+
+
+        /* =================================================
+           LINHA INFERIOR
+        ================================================= */
+
+        '<tr>' +
+
+            '<td colspan="2" ' +
+
+            'style="' +
+
+                'padding-top:12px;' +
+
+                'border-bottom:2px solid #717171;' +
+
+                'font-size:1px;' +
+
+                'line-height:1px;' +
+
+            '">' +
+
+                '&nbsp;' +
+
+            '</td>' +
+
+        '</tr>' +
+
+
+        '</table>';
+
+
+
+    /* =====================================================
+       RENDERIZA
+    ===================================================== */
+
+    document.getElementById(
+        'assinaturaRenderizada'
+    ).innerHTML =
+        template;
+
+}
+
+
+
+/* =========================================================
+   COPIAR ASSINATURA
+========================================================= */
+
+function copiarAssinatura() {
+
+    var elemento =
+        document.getElementById(
+            'assinaturaRenderizada'
+        );
+
+
+    var range =
+        document.createRange();
+
+
+    range.selectNodeContents(
+        elemento
+    );
+
+
+    var selection =
+        window.getSelection();
+
+
+    selection.removeAllRanges();
+
+
+    selection.addRange(
+        range
+    );
+
+
+    try {
+
+        document.execCommand(
+            'copy'
+        );
+
+
+        alert(
+            'Assinatura copiada com sucesso! Pronta para colar.'
+        );
+
+    }
+
+    catch (erro) {
+
+        alert(
+            'Não foi possível copiar automaticamente. ' +
+            'Selecione a assinatura e copie manualmente.'
+        );
+
+    }
+
+
+    selection.removeAllRanges();
+
+}
+
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+atualizarSelecaoLogos();
+
+atualizarAssinatura();
+
+
+</script>
+
+
+</body>
+
+</html>
