@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gerador de Assinatura</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            padding: 30px;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .campo {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #555;
+            font-size: 13px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #003366;
+            box-shadow: 0 0 3px rgba(0,51,102,0.25);
+        }
+
+        .preview-box {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 620px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: fit-content;
+        }
+
+        .resultado {
+            border: 1px dashed #bbb;
+            padding: 20px;
+            background: #fff;
+            min-height: 150px;
+            overflow-x: auto;
+        }
+
+        .btn-copiar {
+            margin-top: 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            width: 100%;
+        }
+
+        .btn-copiar:hover {
+            background-color: #218838;
+        }
+
+        .sub-campo {
+            margin-top: 5px;
+            padding-left: 10px;
+            border-left: 2px solid #f2b01e;
+        }
+
+        .ajuda {
+            font-size: 11px;
+            color: #777;
+            margin-top: 4px;
+        }
+
+        .separador {
+            border: 0;
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- FORMULÁRIO -->
+    <!-- ========================= -->
+
+    <div class="container">
+
+        <h2>Dados da Assinatura</h2>
+
+        <div class="campo">
+            <label for="quantidadeLogos">
+                Quantidade de Logotipos:
+            </label>
+
+            <select id="quantidadeLogos" onchange="alternarCamposLogos()">
+                <option value="1">1 Logo</option>
+                <option value="2">2 Logos</option>
+                <option value="3">3 Logos</option>
+            </select>
+        </div>
+
+        <!-- LOGO 1 -->
+
+        <div id="blocoLogo1" class="campo">
+            <label for="linkLogo1">
+                Link/Caminho do Logo 1:
+            </label>
+
+            <input
+                type="text"
+                id="linkLogo1"
+                value="https://i.ibb.co/DPVBKwZk/Screenshot-1.png"
+                oninput="atualizarAssinatura()"
+            >
+        </div>
+
+        <!-- LOGO 2 -->
+
+        <div id="blocoLogo2" class="campo sub-campo" style="display:none;">
+
+            <label for="linkLogo2">
+                Link/Caminho do Logo 2:
+            </label>
+
+            <input
+                type="text"
+                id="linkLogo2"
+                value=""
+                placeholder="Ex: logo-certificacao.png"
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- LOGO 3 -->
+
+        <div id="blocoLogo3" class="campo sub-campo" style="display:none;">
+
+            <label for="linkLogo3">
+                Link/Caminho do Logo 3:
+            </label>
+
+            <input
+                type="text"
+                id="linkLogo3"
+                value=""
+                placeholder="Ex: logo-parceiro.png"
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- TAMANHO LOGO -->
+
+        <div class="campo">
+
+            <label for="larguraLogo">
+                Largura de cada Logo (px):
+            </label>
+
+            <input
+                type="number"
+                id="larguraLogo"
+                value="130"
+                min="30"
+                max="250"
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- NOME -->
+
+        <div class="campo">
+
+            <label for="nome">
+                Nome Completo:
+            </label>
+
+            <input
+                type="text"
+                id="nome"
+                value="Nome do Funcionário"
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- CARGO -->
+
+        <div class="campo">
+
+            <label for="cargo">
+                Cargo / Departamento:
+            </label>
+
+            <input
+                type="text"
+                id="cargo"
+                value="Cargo | Departamento"
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- EMAIL -->
+
+        <div class="campo">
+
+            <label for="email">
+                E-mail:
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                value="funcionario@empresa.com"
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- TELEFONE -->
+
+        <div class="campo">
+
+            <label for="telefone">
+                Telefone:
+            </label>
+
+            <input
+                type="text"
+                id="telefone"
+                value="(00) 0000-0000"
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- EMPRESA -->
+
+        <div class="campo">
+
+            <label for="empresa">
+                Nome da Empresa:
+            </label>
+
+            <input
+                type="text"
+                id="empresa"
+                value="Nome da Empresa S/A"
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- SITE -->
+
+        <div class="campo">
+
+            <label for="site">
+                Site da Empresa:
+            </label>
+
+            <input
+                type="text"
+                id="site"
+                value="www.site.com.br"
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <hr class="separador">
+
+        <h3 style="font-size:15px; margin-top:20px; color:#333;">
+            Redes Sociais
+        </h3>
+
+        <p style="font-size:12px; color:#777;">
+            Deixe em branco para ocultar o ícone.
+        </p>
+
+        <!-- WHATSAPP -->
+
+        <div class="campo">
+
+            <label for="linkWa">
+                WhatsApp:
+            </label>
+
+            <input
+                type="text"
+                id="linkWa"
+                value=""
+                placeholder="(67) 99999-8888"
+                oninput="formatarWhatsApp(this); atualizarAssinatura();"
+            >
+
+            <div class="ajuda">
+                Digite somente o número. O link wa.me será criado automaticamente.
+            </div>
+
+        </div>
+
+        <!-- TEAMS -->
+
+        <div class="campo">
+
+            <label for="linkTeams">
+                Microsoft Teams / E-mail corporativo:
+            </label>
+
+            <input
+                type="email"
+                id="linkTeams"
+                value=""
+                placeholder="usuario@empresa.com"
+                oninput="atualizarAssinatura()"
+            >
+
+            <div class="ajuda">
+                Digite o e-mail corporativo. O link de chat do Teams será criado automaticamente.
+            </div>
+
+        </div>
+
+        <!-- YOUTUBE -->
+
+        <div class="campo">
+
+            <label for="linkYt">
+                YouTube:
+            </label>
+
+            <input
+                type="text"
+                id="linkYt"
+                value=""
+                placeholder="https://youtube.com/..."
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- FACEBOOK -->
+
+        <div class="campo">
+
+            <label for="linkFb">
+                Facebook:
+            </label>
+
+            <input
+                type="text"
+                id="linkFb"
+                value=""
+                placeholder="https://facebook.com/..."
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- INSTAGRAM -->
+
+        <div class="campo">
+
+            <label for="linkIg">
+                Instagram:
+            </label>
+
+            <input
+                type="text"
+                id="linkIg"
+                value=""
+                placeholder="https://instagram.com/..."
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- X -->
+
+        <div class="campo">
+
+            <label for="linkTw">
+                Twitter / X:
+            </label>
+
+            <input
+                type="text"
+                id="linkTw"
+                value=""
+                placeholder="https://x.com/..."
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+        <!-- LINKEDIN -->
+
+        <div class="campo">
+
+            <label for="linkIn">
+                LinkedIn:
+            </label>
+
+            <input
+                type="text"
+                id="linkIn"
+                value=""
+                placeholder="https://linkedin.com/..."
+                oninput="atualizarAssinatura()"
+            >
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- VISUALIZAÇÃO -->
+    <!-- ========================= -->
+
+    <div class="preview-box">
+
+        <div>
+
+            <h2>
+                Visualização
+            </h2>
+
+            <p style="font-size:12px; color:#777;">
+                Os ícones sociais abaixo só aparecem se preenchidos. </p>
+				
+				<p style="font-size:12px; color:#777;"> Link da logo Engepar: https://i.ibb.co/DPVBKwZk/Screenshot-1.png </p>
+				
+				<p style="font-size:12px; color:#777;"> Link da logo CVS: https://i.ibb.co/hRsTbwqr/image-b0982fd8.png </p>
+				
+				<p style="font-size:12px; color:#777;"> Link da logo Dom Pedro: https://i.ibb.co/v8nGFpQ/image-28ff0223.png</p>
+				
+				<p style="font-size:12px; color:#777;"> Link da logo Tamarana: </p>
+				
+            </p>
+
+            <div
+                id="assinaturaRenderizada"
+                class="resultado">
+            </div>
+
+        </div>
+
+        <button
+            class="btn-copiar"
+            onclick="copiarAssinatura()"
+        >
+            Copiar Assinatura
+        </button>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ========================= -->
+
+    <script>
+
+        /* =====================================================
+           MOSTRAR / OCULTAR LOGOS
+        ===================================================== */
+
+        function alternarCamposLogos() {
+
+            var qtd =
+                document.getElementById('quantidadeLogos').value;
+
+            document.getElementById('blocoLogo2').style.display =
+                qtd >= 2 ? 'block' : 'none';
+
+            document.getElementById('blocoLogo3').style.display =
+                qtd == 3 ? 'block' : 'none';
+
+            atualizarAssinatura();
+        }
+
+
+        /* =====================================================
+           MÁSCARA DO WHATSAPP
+        ===================================================== */
+
+        function formatarWhatsApp(campo) {
+
+            var valor =
+                campo.value.replace(/\D/g, '');
+
+            /*
+             * Remove o código do Brasil caso tenha sido digitado.
+             */
+
+            if (
+                valor.startsWith('55') &&
+                valor.length >= 12
+            ) {
+                valor = valor.substring(2);
+            }
+
+            /*
+             * Limita a 11 números:
+             * DDD + 9 dígitos
+             */
+
+            valor = valor.substring(0, 11);
+
+            /*
+             * Formatação:
+             *
+             * 67
+             * 67999
+             * 67999998888
+             *
+             * vira:
+             *
+             * (67) 99999-8888
+             */
+
+            if (valor.length <= 2) {
+
+                campo.value = valor;
+
+            } else if (valor.length <= 7) {
+
+                campo.value =
+                    '(' +
+                    valor.substring(0, 2) +
+                    ') ' +
+                    valor.substring(2);
+
+            } else {
+
+                campo.value =
+                    '(' +
+                    valor.substring(0, 2) +
+                    ') ' +
+                    valor.substring(2, 7) +
+                    '-' +
+                    valor.substring(7);
+
+            }
+
+        }
+
+
+        /* =====================================================
+           GERA LINK DO WHATSAPP
+        ===================================================== */
+
+        function gerarLinkWhatsApp(numero) {
+
+            var somenteNumeros =
+                numero.replace(/\D/g, '');
+
+            /*
+             * Se o usuário colocou 55 na frente,
+             * remove para não duplicar.
+             */
+
+            if (
+                somenteNumeros.startsWith('55') &&
+                somenteNumeros.length >= 12
+            ) {
+
+                somenteNumeros =
+                    somenteNumeros.substring(2);
+
+            }
+
+            /*
+             * Só gera o link se houver
+             * pelo menos DDD + telefone.
+             */
+
+            if (somenteNumeros.length >= 10) {
+
+                return 'https://wa.me/55' +
+                       somenteNumeros;
+
+            }
+
+            return '';
+
+        }
+
+
+        /* =====================================================
+           GERA LINK DO MICROSOFT TEAMS
+        ===================================================== */
+
+        function gerarLinkTeams(email) {
+
+            email = email.trim();
+
+            if (!email) {
+                return '';
+            }
+
+            /*
+             * encodeURIComponent transforma:
+             *
+             * @
+             *
+             * em:
+             *
+             * %40
+             *
+             * para que o e-mail possa ser usado
+             * corretamente dentro da URL.
+             */
+
+            return 'https://teams.microsoft.com/l/chat/0/0?users=' +
+                   encodeURIComponent(email);
+
+        }
+
+
+        /* =====================================================
+           ATUALIZA ASSINATURA
+        ===================================================== */
+
+        function atualizarAssinatura() {
+
+            var qtdLogos =
+                document.getElementById('quantidadeLogos').value;
+
+            var logo1 =
+                document.getElementById('linkLogo1').value.trim();
+
+            var logo2 =
+                document.getElementById('linkLogo2').value.trim();
+
+            var logo3 =
+                document.getElementById('linkLogo3').value.trim();
+
+            var larguraLogo =
+                document.getElementById('larguraLogo').value;
+
+            var nome =
+                document.getElementById('nome').value;
+
+            var cargo =
+                document.getElementById('cargo').value;
+
+            var email =
+                document.getElementById('email').value;
+
+            var tel =
+                document.getElementById('telefone').value;
+
+            var empresa =
+                document.getElementById('empresa').value;
+
+            var site =
+                document.getElementById('site').value.trim();
+
+
+            /* =========================
+               REDES SOCIAIS
+            ========================= */
+
+            var whatsappDigitado =
+                document.getElementById('linkWa').value;
+
+            var linkWa =
+                gerarLinkWhatsApp(whatsappDigitado);
+
+
+            var emailTeams =
+                document.getElementById('linkTeams').value;
+
+            var linkTeams =
+                gerarLinkTeams(emailTeams);
+
+
+            var linkYt =
+                document.getElementById('linkYt').value.trim();
+
+            var linkFb =
+                document.getElementById('linkFb').value.trim();
+
+            var linkIg =
+                document.getElementById('linkIg').value.trim();
+
+            var linkTw =
+                document.getElementById('linkTw').value.trim();
+
+            var linkIn =
+                document.getElementById('linkIn').value.trim();
+
+
+            /* =========================
+               TELEFONE
+            ========================= */
+
+            var numTelefone =
+                tel.replace(/[^0-9]/g, '');
+
+
+            /* =========================
+               LARGURAS
+            ========================= */
+
+            var larguraColunaEsquerda =
+                qtdLogos == 1
+                    ? "150px"
+                    : (qtdLogos == 2
+                        ? "220px"
+                        : "290px");
+
+
+            var larguraTotalTabela =
+                qtdLogos == 1
+                    ? "560px"
+                    : (qtdLogos == 2
+                        ? "640px"
+                        : "710px");
+
+
+            /* =========================
+               LOGOS
+            ========================= */
+
+            var estruturaLogos =
+                '<img src="' +
+                logo1 +
+                '" alt="Logo 1" width="' +
+                larguraLogo +
+                '" style="' +
+                'display:inline-block;' +
+                'margin:5px;' +
+                'border:0;' +
+                'vertical-align:middle;' +
+                '" />';
+
+
+            if (
+                qtdLogos >= 2 &&
+                logo2
+            ) {
+
+                estruturaLogos +=
+                    '<img src="' +
+                    logo2 +
+                    '" alt="Logo 2" width="' +
+                    larguraLogo +
+                    '" style="' +
+                    'display:inline-block;' +
+                    'margin:5px;' +
+                    'border:0;' +
+                    'vertical-align:middle;' +
+                    '" />';
+
+            }
+
+
+            if (
+                qtdLogos == 3 &&
+                logo3
+            ) {
+
+                estruturaLogos +=
+                    '<img src="' +
+                    logo3 +
+                    '" alt="Logo 3" width="' +
+                    larguraLogo +
+                    '" style="' +
+                    'display:inline-block;' +
+                    'margin:5px;' +
+                    'border:0;' +
+                    'vertical-align:middle;' +
+                    '" />';
+
+            }
+
+
+            /* =========================
+               ESTILO DOS ÍCONES
+            ========================= */
+
+            var iconStyle =
+                "display:inline-block;" +
+                "width:16px;" +
+                "height:16px;" +
+                "margin:0 4px;" +
+                "border:0;" +
+                "vertical-align:middle;";
+
+
+            var redesSociaisHtml = '';
+
+
+            /* =========================
+               WHATSAPP
+            ========================= */
+
+            if (linkWa) {
+
+                redesSociaisHtml +=
+
+                    '<a href="' +
+                    linkWa +
+                    '" target="_blank" ' +
+                    'rel="noopener noreferrer">' +
+
+                    '<img ' +
+                    'src="https://cdn-icons-png.flaticon.com/16/1384/1384055.png" ' +
+                    'alt="WhatsApp" ' +
+                    'title="WhatsApp" ' +
+                    'style="' +
+                    iconStyle +
+                    '" />' +
+
+                    '</a>';
+
+            }
+
+
+            /* =========================
+               MICROSOFT TEAMS
+            ========================= */
+
+            if (linkTeams) {
+
+                redesSociaisHtml +=
+
+                    '<a href="' +
+                    linkTeams +
+                    '" target="_blank" ' +
+                    'rel="noopener noreferrer">' +
+
+                    '<img ' +
+                    'src="https://cdn-icons-png.flaticon.com/16/15047/15047490.png" ' +
+                    'alt="Microsoft Teams" ' +
+                    'title="Microsoft Teams" ' +
+                    'style="' +
+                    iconStyle +
+                    '" />' +
+
+                    '</a>';
+
+            }
+
+
+            /* =========================
+               YOUTUBE
+            ========================= */
+
+            if (linkYt) {
+
+                redesSociaisHtml +=
+
+                    '<a href="' +
+                    linkYt +
+                    '" target="_blank" ' +
+                    'rel="noopener noreferrer">' +
+
+                    '<img ' +
+                    'src="https://cdn-icons-png.flaticon.com/16/1384/1384060.png" ' +
+                    'alt="YouTube" ' +
+                    'title="YouTube" ' +
+                    'style="' +
+                    iconStyle +
+                    '" />' +
+
+                    '</a>';
+
+            }
+
+
+            /* =========================
+               FACEBOOK
+            ========================= */
+
+            if (linkFb) {
+
+                redesSociaisHtml +=
+
+                    '<a href="' +
+                    linkFb +
+                    '" target="_blank" ' +
+                    'rel="noopener noreferrer">' +
+
+                    '<img ' +
+                    'src="https://cdn-icons-png.flaticon.com/16/733/733547.png" ' +
+                    'alt="Facebook" ' +
+                    'title="Facebook" ' +
+                    'style="' +
+                    iconStyle +
+                    '" />' +
+
+                    '</a>';
+
+            }
+
+
+            /* =========================
+               INSTAGRAM
+            ========================= */
+
+            if (linkIg) {
+
+                redesSociaisHtml +=
+
+                    '<a href="' +
+                    linkIg +
+                    '" target="_blank" ' +
+                    'rel="noopener noreferrer">' +
+
+                    '<img ' +
+                    'src="https://cdn-icons-png.flaticon.com/16/2111/2111463.png" ' +
+                    'alt="Instagram" ' +
+                    'title="Instagram" ' +
+                    'style="' +
+                    iconStyle +
+                    '" />' +
+
+                    '</a>';
+
+            }
+
+
+            /* =========================
+               X / TWITTER
+            ========================= */
+
+            if (linkTw) {
+
+                redesSociaisHtml +=
+
+                    '<a href="' +
+                    linkTw +
+                    '" target="_blank" ' +
+                    'rel="noopener noreferrer">' +
+
+                    '<img ' +
+                    'src="https://cdn-icons-png.flaticon.com/16/733/733579.png" ' +
+                    'alt="X" ' +
+                    'title="X / Twitter" ' +
+                    'style="' +
+                    iconStyle +
+                    '" />' +
+
+                    '</a>';
+
+            }
+
+
+            /* =========================
+               LINKEDIN
+            ========================= */
+
+            if (linkIn) {
+
+                redesSociaisHtml +=
+
+                    '<a href="' +
+                    linkIn +
+                    '" target="_blank" ' +
+                    'rel="noopener noreferrer">' +
+
+                    '<img ' +
+                    'src="https://cdn-icons-png.flaticon.com/16/145/145807.png" ' +
+                    'alt="LinkedIn" ' +
+                    'title="LinkedIn" ' +
+                    'style="' +
+                    iconStyle +
+                    '" />' +
+
+                    '</a>';
+
+            }
+
+
+            /* =========================
+               SITE
+            ========================= */
+
+            var siteLink = site;
+
+            if (
+                site &&
+                !site.match(/^https?:\/\//i)
+            ) {
+
+                siteLink =
+                    'https://' + site;
+
+            }
+
+
+            /* =========================
+               TEMPLATE DA ASSINATURA
+            ========================= */
+
+            var template =
+
+                '<table cellpadding="0" cellspacing="0" border="0" ' +
+                'style="' +
+                'font-family:Arial,sans-serif;' +
+                'background-color:#ffffff;' +
+                'border-collapse:collapse;' +
+                'width:' +
+                larguraTotalTabela +
+                ';' +
+                'line-height:1.45;' +
+                '">' +
+
+                '<tr>' +
+
+                    '<td colspan="2" ' +
+                    'style="' +
+                    'border-top:2px solid #717171;' +
+                    'padding-top:14px;' +
+                    'font-size:1px;' +
+                    'line-height:1px;' +
+                    '">' +
+
+                    '&nbsp;' +
+
+                    '</td>' +
+
+                '</tr>' +
+
+
+                '<tr>' +
+
+                    '<td valign="middle" ' +
+                    'style="' +
+                    'width:' +
+                    larguraColunaEsquerda +
+                    ';' +
+                    'text-align:center;' +
+                    'padding-right:18px;' +
+                    'border-right:1px solid #717171;' +
+                    '">' +
+
+                        '<div style="' +
+                        'margin-bottom:12px;' +
+                        'text-align:center;' +
+                        '">' +
+
+                            estruturaLogos +
+
+                        '</div>' +
+
+
+                        '<div style="' +
+                        'text-align:center;' +
+                        'line-height:1px;' +
+                        '">' +
+
+                            redesSociaisHtml +
+
+                        '</div>' +
+
+                    '</td>' +
+
+
+                    '<td valign="middle" ' +
+                    'style="' +
+                    'text-align:left;' +
+                    'padding-left:18px;' +
+                    '">' +
+
+
+                        '<div style="' +
+                        'font-size:16px;' +
+                        'font-weight:bold;' +
+                        'color:#f2b01e;' +
+                        'margin-bottom:3px;' +
+                        '">' +
+
+                            nome +
+
+                        '</div>' +
+
+
+                        '<div style="' +
+                        'font-size:13px;' +
+                        'color:#003366;' +
+                        'margin-bottom:10px;' +
+                        '">' +
+
+                            cargo +
+
+                        '</div>' +
+
+
+                        '<div style="' +
+                        'margin-bottom:2px;' +
+                        '">' +
+
+                            '<a href="mailto:' +
+                            email +
+                            '" ' +
+                            'style="' +
+                            'font-size:13px;' +
+                            'color:#003366;' +
+                            'text-decoration:underline;' +
+                            '">' +
+
+                                email +
+
+                            '</a>' +
+
+                        '</div>' +
+
+
+                        '<div style="' +
+                        'margin-bottom:2px;' +
+                        '">' +
+
+                            '<a href="tel:' +
+                            numTelefone +
+                            '" ' +
+                            'style="' +
+                            'font-size:13px;' +
+                            'color:#003366;' +
+                            'text-decoration:underline;' +
+                            '">' +
+
+                                tel +
+
+                            '</a>' +
+
+                        '</div>' +
+
+
+                        '<div style="' +
+                        'font-size:12px;' +
+                        'color:#333333;' +
+                        'margin-top:8px;' +
+                        '">' +
+
+                            '<span style="' +
+                            'font-weight:bold;' +
+                            'color:#003366;' +
+                            '">' +
+
+                                empresa +
+
+                            '</span>' +
+
+
+                            '<span style="' +
+                            'color:#717171;' +
+                            'margin:0 5px;' +
+                            '">' +
+
+                                '|' +
+
+                            '</span>' +
+
+
+                            '<a href="' +
+                            siteLink +
+                            '" ' +
+                            'target="_blank" ' +
+                            'rel="noopener noreferrer" ' +
+                            'style="' +
+                            'color:#003366;' +
+                            'text-decoration:underline;' +
+                            '">' +
+
+                                site +
+
+                            '</a>' +
+
+                        '</div>' +
+
+                    '</td>' +
+
+                '</tr>' +
+
+
+                '<tr>' +
+
+                    '<td colspan="2" ' +
+                    'style="' +
+                    'padding-top:14px;' +
+                    'border-bottom:2px solid #717171;' +
+                    'font-size:1px;' +
+                    'line-height:1px;' +
+                    '">' +
+
+                        '&nbsp;' +
+
+                    '</td>' +
+
+                '</tr>' +
+
+                '</table>';
+
+
+            document.getElementById(
+                'assinaturaRenderizada'
+            ).innerHTML = template;
+
+        }
+
+
+        /* =====================================================
+           COPIAR ASSINATURA
+        ===================================================== */
+
+        function copiarAssinatura() {
+
+            var elemento =
+                document.getElementById(
+                    'assinaturaRenderizada'
+                );
+
+            var range =
+                document.createRange();
+
+            range.selectNodeContents(elemento);
+
+            var selection =
+                window.getSelection();
+
+            selection.removeAllRanges();
+
+            selection.addRange(range);
+
+
+            try {
+
+                document.execCommand('copy');
+
+                alert(
+                    'Assinatura copiada com sucesso! Pronta para colar.'
+                );
+
+            } catch (erro) {
+
+                alert(
+                    'Não foi possível copiar automaticamente. ' +
+                    'Selecione a assinatura e copie manualmente.'
+                );
+
+            }
+
+
+            selection.removeAllRanges();
+
+        }
+
+
+        /* =====================================================
+           INICIALIZAÇÃO
+        ===================================================== */
+
+        atualizarAssinatura();
+
+    </script>
+
+</body>
+</html>
